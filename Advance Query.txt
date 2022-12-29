@@ -1,0 +1,121 @@
+--DEPARTMENT WIZ EMPLOYEE--
+Select Dept_Name,Emp_ID,Emp_Name,Emp_Age,Emp_Gender,Emp_Religion,Emp_Address,Emp_Email,Emp_PhoneNo 
+from DEPARTMENT JOIN EMPLOYEE 
+ON DEPARTMENT.Dept_ID=EMPLOYEE.Emp_Dept 
+AND DEPARTMENT.Dept_ID=?
+
+
+--highest paid salary in each department--
+SELECT Emp_ID,Emp_Name,Emp_netSalary FROM EMPLOYEE 
+WHERE Emp_netSalary IN (SELECT max(Emp_netSalary) 
+FROM EMPLOYEE 
+WHERE Emp_Dept IN(SELECT d.Dept_ID FROM DEPARTMENT d where d.Dept_Name='"+select+"'
+
+
+--EMPLOYEE WHO JOIN IN THE SAME DATE--
+SELECT Emp_ID,Emp_Name,Emp_Doj FROM EMPLOYEE e 
+WHERE Emp_Doj 
+IN (SELECT Emp_Doj FROM EMPLOYEE WHERE e.Emp_ID <> Emp_ID)
+
+
+--ACOUNT LIST--
+SELECT EMPLOYEE.Emp_ID,Emp_Account,Emp_Balance,Emp_Name,Emp_Address,Emp_City,Emp_Nationality,Emp_Email,Emp_PhoneNo 
+FROM EMPLOYEE,EMPLOYEE_ACCOUNT 
+WHERE EMPLOYEE.Emp_ID=EMPLOYEE_ACCOUNT.Emp_AccID
+
+
+
+Select DEPARTMENT.Dept_Name,DEPARTMENT.Dept_ID 
+FROM EMPLOYEE 
+INNER JOIN DEPARTMENT 
+ON Emp_Dept=Dept_ID 
+GROUP BY DEPARTMENT.Dept_Name,DEPARTMENT.Dept_ID 
+HAVING COUNT(*)>1
+
+
+
+--FIND EMPLOYEE WHO GETTING ALLOWANCE--
+Select PayGrade_ID,Trvel_Al_Amount,Medical_Al_Amount,House_Rnt_Amount,Meal_Al_Amount,Total_Al_Amount 
+FROM EMPLOYEE JOIN EMPLOYEE_PAY_GRADE 
+ON EMPLOYEE.Emp_ID=EMPLOYEE_PAY_GRADE.Emp_ID 
+AND EMPLOYEE_PAY_GRADE.Emp_ID=?
+
+
+--UPDATE EMPLOYEE ALLOWANCE--
+UPDATE EMPLOYEE_PAY_GRADE set Trvel_Al_Amount='"+travel+"',Medical_Al_Amount='"+medical+"',House_Rnt_Amount='"+home+"',Meal_Al_Amount='"+meals+"',Total_Al_Amount='"+total+"' 
+where PayGrade_ID='"+paygradeID+"'
+
+
+--ADMIN LIST-
+SELECT EMPLOYEE.Emp_ID,Admin_ID,Emp_Dept,Emp_Name,Emp_Doj,Emp_Address,Emp_City,Emp_Nationality,Emp_Email,Emp_PhoneNo 
+FROM EMPLOYEE,EADMIN WHERE 
+EMPLOYEE.Emp_ID=EADMIN.Emp_ID
+
+
+--FIND SAVING ACCOUNT-
+Select Emp_Account,Emp_Balance from EMPLOYEE JOIN EMPLOYEE_ACCOUNT 
+ON EMPLOYEE.Emp_ID=EMPLOYEE_ACCOUNT.Emp_AccID 
+AND EMPLOYEE_ACCOUNT.Emp_AccID=?
+
+
+
+--EMPLOYEE TOTAL LATE--
+SELECT COUNT(Result) as 'LateDay' 
+FROM ATTENDANCE 
+WHERE Result='Late' and Emp_ID=? and C_Month=?
+
+
+
+--EMPLOYEE PAYROLL--
+Select Dept_Name,Emp_ID,Emp_Name,Emp_Email,Emp_PhoneNo,Emp_netSalary 
+FROM DEPARTMENT JOIN EMPLOYEE 
+ON DEPARTMENT.Dept_ID=EMPLOYEE.Emp_Dept 
+AND EMPLOYEE.Emp_ID=?
+
+
+--HIGHEST PAID EMPLOYEE FOR ALL EMPLOYEE--
+SELECT E.Emp_Name,E.Emp_ID,E.Emp_Dept 
+FROM EMPLOYEE E WHERE E.Emp_netSalary 
+IN (SELECT max(Emp_netSalary) FROM EMPLOYEE GROUP BY Emp_Dept)
+
+
+
+--FIND EMPLOYEE AND EMPLOYEE ACCOUNT INFORMATION WHO CREATE A PERSONAL SAVING ACCOUNT--
+Select Emp_ID,Emp_Account,Emp_Name,Emp_Email,Emp_Phone,Emp_Balance 
+from EMPLOYEE JOIN EMPLOYEE_ACCOUNT 
+ON EMPLOYEE.Emp_ID=EMPLOYEE_ACCOUNT.Emp_AccID 
+AND EMPLOYEE_ACCOUNT.Emp_AccID=?
+
+
+--FIND EMPLOYEE WHOSE SALARY IS INCREASED--
+Select Emp_Name,Dept_Name,Emp_Address,Emp_Email,Emp_PhoneNo,Emp_netSalary 
+from DEPARTMENT JOIN EMPLOYEE ON DEPARTMENT.Dept_ID=EMPLOYEE.Emp_Dept 
+AND EMPLOYEE.Emp_ID=?
+
+
+--EMPLOYEE TOTAL EXTRA WORKING DAYS--
+SELECT COUNT(Emp_ID) as 'Total Working Days' 
+FROM EMPLOYEE_OVERTIME 
+WHERE Emp_ID=? and Working_Month=?
+
+
+--Employee Salary--
+SELECT Emp_ID,Emp_Name,Emp_netSalary/30 Daily,Emp_netSalary/7 Weekly,Emp_netSalary,Emp_netSalary*12 Annually 
+FROM EMPLOYEE 
+ORDER BY Annually
+
+
+--HIGHEST NUMBER OF EMPLOYEE WORKING--
+SELECT Dept_Name FROM DEPARTMENT 
+WHERE Dept_ID IN 
+(SELECT Emp_Dept FROM EMPLOYEE GROUP BY Emp_Dept HAVING count(*) 
+IN (SELECT MAX(mycount) 
+FROM (SELECT COUNT(*) mycount 
+FROM EMPLOYEE GROUP BY Emp_Dept) a))
+
+
+--LIST THE DEPARTMENT WHERE THERE ARE NO EMPLOYEE--
+SELECT d.Dept_ID,count(a.Emp_Dept) as TotalEmployee 
+FROM DEPARTMENT d LEFT OUTER JOIN EMPLOYEE
+a ON a.Emp_Dept=d.Dept_ID 
+GROUP BY d.Dept_ID HAVING count(a.Emp_Dept)=0

@@ -1,0 +1,38 @@
+package payrollmanagementsystem;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+
+public class ConnectMSSQL {
+    
+    public Connection connection;
+            
+    public void connectDB() {
+        try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            connection = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=PayrollManagementSystem;selectMethod=cursor", "sa", "123456");
+            
+            //System.out.println("DATABASE NAME IS:" + connection.getMetaData().getDatabaseProductName());
+
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT Emp_Name,Emp_ID FROM EMPLOYEE");
+            
+            while (resultSet.next()) {
+                
+                System.out.println("Employee Name:" + resultSet.getString("Emp_Name"));
+                System.out.println("Employee ID:" + resultSet.getString("Emp_ID"));
+            }
+            
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+            System.out.println("Connect Error= "+ex);
+        }
+    }
+    
+    public static void main(String[] args) {
+        
+    }
+}
